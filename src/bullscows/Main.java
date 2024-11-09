@@ -1,6 +1,7 @@
 package bullscows;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -42,22 +43,18 @@ public class Main {
     private static String generateSecretCode(int length) {
         StringBuilder secretCode = new StringBuilder();
         Set<Character> usedDigits = new HashSet<>();
+        Random random = new Random();
 
         while(secretCode.length() < length) {
-            long pseudoRandomNumber = System.nanoTime();
-            String pseudoRandomString = new StringBuilder(Long.toString(pseudoRandomNumber)).reverse().toString();
+            int digit = random.nextInt(10);
+            char digitChar = (char) (digit + '0');
 
-            for (char digit : pseudoRandomString.toCharArray()) {
-                if (secretCode.isEmpty() && digit == '0') {
-                    continue;
-                }
-                if(!usedDigits.contains(digit) && Character.isDigit(digit)) {
-                    secretCode.append(digit);
-                    usedDigits.add(digit);
-                    if(secretCode.length() == length) {
-                        break;
-                    }
-                }
+            if (secretCode.isEmpty() && digit == 0) {
+                continue;
+            }
+            if(!usedDigits.contains(digitChar)) {
+                secretCode.append(digitChar);
+                usedDigits.add(digitChar);
             }
         }
         return secretCode.toString();
