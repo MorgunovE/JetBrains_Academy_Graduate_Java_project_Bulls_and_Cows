@@ -8,14 +8,34 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the length of the secret code: ");
+
+        System.out.print("Please, enter the secret code's length: ");
         int length = scanner.nextInt();
 
         if (length > 10) {
             System.out.println("Error: can't generate a secret number with a length of " + length + " because there aren't enough unique digits.");
         } else {
             String secretCode = generateSecretCode(length);
-            System.out.println("The random secret number is " + secretCode + ".");
+            System.out.println("Okay, let's start a game!");
+
+            int turn = 1;
+            while(true) {
+                System.out.println("Turn " + turn + ":");
+                String guess = scanner.next();
+
+                int[] result = gradeGuess(secretCode, guess);
+                int bulls = result[0];
+                int cows = result[1];
+
+                if( bulls == length) {
+                    System.out.println("Grade: " + bulls + " bull(s)");
+                    System.out.println("Congratulations! You guessed the secret code.");
+                    break;
+                } else {
+                    System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s)");
+                }
+                turn++;
+            }
         }
     }
 
@@ -26,6 +46,7 @@ public class Main {
         while(secretCode.length() < length) {
             long pseudoRandomNumber = System.nanoTime();
             String pseudoRandomString = new StringBuilder(Long.toString(pseudoRandomNumber)).reverse().toString();
+
             for (char digit : pseudoRandomString.toCharArray()) {
                 if (secretCode.isEmpty() && digit == '0') {
                     continue;
@@ -42,7 +63,7 @@ public class Main {
         return secretCode.toString();
     }
 
-    private static void gradeGuess(String secretCode, String guess) {
+    private static int[] gradeGuess(String secretCode, String guess) {
         int bulls = 0;
         int cows = 0;
 
@@ -54,10 +75,7 @@ public class Main {
             }
         }
 
-        if (bulls == 0 && cows == 0) {
-            System.out.println("Grade: None. The secret code is " + secretCode + ".");
-        } else {
-            System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s). The secret code is " + secretCode + ".");
-        }
+        return new int[]{bulls, cows};
     }
+
 }
